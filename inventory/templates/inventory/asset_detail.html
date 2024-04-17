@@ -1,0 +1,18 @@
+<!-- inventory/templates/inventory/asset_detail.html -->
+{% extends 'base_generic.html' %}
+{% block content %}
+  <h1>{{ object.nome }}</h1>
+  <p>Categoria: {{ object.categoria }}</p>
+  <p>Status: {{ object.status }}</p>
+  <p>Data de Aquisição: {{ object.data_aquisicao }}</p>
+  <p>Custo de Aquisição: {{ object.custo_aquisicao }}</p>
+  <p>Valor Atual: {{ object.valor_atual }}</p>
+  <p>Fornecedor: {{ object.fornecedor }}</p>
+  <p>Número de Série: {{ object.numero_serie }}</p>
+  <p>Informações da Garantia: {{ object.informacoes_garantia }}</p>
+  <p>Responsável: {{ object.responsavel }}</p>
+  <p>Próxima Manutenção: {{ object.proxima_manutencao }}</p>
+  <p>Notas: {{ object.notas }}</p>
+  <a href="{% url 'inventory:asset-edit' object.pk %}">Editar</a>
+  <a href="{% url 'inventory:asset-list' %}">Voltar à lista</a>
+{% endblock %}

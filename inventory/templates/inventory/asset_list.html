@@ -1,0 +1,28 @@
+<!-- inventory/templates/inventory/asset_list.html -->
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Lista de Ativos</h1>
+  <a href="{% url 'inventory:asset-new' %}" class="btn btn-primary mb-3">Criar Novo Ativo</a>
+  <table class="table" id="assetTable">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Categoria</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for asset in object_list %}
+      <tr>
+        <td>{{ asset.nome }}</td>
+        <td>{{ asset.categoria }}</td>
+        <td>
+          <a href="{% url 'inventory:asset-detail' asset.pk %}" class="btn btn-info btn-sm">Ver</a>
+          <a href="{% url 'inventory:asset-edit' asset.pk %}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{% url 'inventory:asset-delete' asset.pk %}" class="btn btn-danger btn-sm">Deletar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
