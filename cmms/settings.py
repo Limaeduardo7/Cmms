@@ -41,7 +41,7 @@ ROOT_URLCONF = 'cmms.urls'  # Substitua 'myproject' pelo nome do seu projeto
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Ajuste conforme necessário
+        'DIRS': [BASE_DIR / 'templates'],  # Removido o segundo 'templates'
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

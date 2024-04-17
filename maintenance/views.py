@@ -10,7 +10,7 @@ class ResponsibleListView(ListView):
 
 class WorkOrderListView(ListView):
     model = WorkOrder
-    template_name = 'templates/maintenance/work_order_list.html'  # Nome do template que você usará para exibir a lista
+    template_name = 'maintenance/work_order_list.html'  # Nome do template que você usará para exibir a lista
 
 # View para listar todos os agendamentos de manutenção
 class MaintenanceScheduleListView(ListView):

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Ordens de Serviço</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Descrição</th>
+        <th>Status</th>
+    </tr>
+    {% for order in object_list %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.description }}</td>
+        <td>{{ order.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
