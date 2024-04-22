@@ -2,6 +2,9 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from .models import Asset, Category
 from django.shortcuts import render
+from rest_framework import viewsets
+from .models import InventoryAsset
+from .serializers import InventoryAssetSerializer
 
 class CategoryListView(ListView):
     model = Category
@@ -35,3 +38,7 @@ class AssetDeleteView(DeleteView):
 
 def home_view(request):
     return render(request, 'home.html')
+
+class InventoryAssetViewSet(viewsets.ModelViewSet):
+    queryset = InventoryAsset.objects.all()
+    serializer_class = InventoryAssetSerializer

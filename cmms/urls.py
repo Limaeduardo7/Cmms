@@ -8,6 +8,7 @@ def home(request):
     return HttpResponse("Bem-vindo ao Sistema de Gestão CMMS!")
 
 urlpatterns = [
+    path('api/', include('inventory.urls')),
     path('', home_view, name='home'),    
     path('admin/', admin.site.urls),
     path('maintenance/', include('maintenance.urls')),  # Certifique-se de que está correto

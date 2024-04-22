@@ -1,74 +1,84 @@
+/* Estilos para o cabeçalho principal */
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #333; /* Cor de fundo do cabeçalho */
+  color: white; /* Cor do texto */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between; /* Espaça os elementos filho uniformemente */
+  align-items: center; /* Centraliza os elementos filho verticalmente */
+  z-index: 1000; /* Assegura que o cabeçalho fique acima de outros elementos */
+}
+
+/* Estilos para o botão de menu em dispositivos móveis */
+.menuButton {
+  display: none; /* Escondido por padrão, mostrado em tela pequena */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para ícones clicáveis no cabeçalho */
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Mostra que o elemento é clicável */
+}
+
+/* Container para dropdowns, posicionamento relativo ao ícone */
+.dropdownContainer {
+  position: relative;
+}
+
+/* Estilos para o menu dropdown */
+.dropdown {
+  position: absolute;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  right: 0;
+  width: 200px; /* Largura fixa para o dropdown */
+  z-index: 1050;
+  display: none; /* Escondido por padrão */
+}
+
+/* Mostra o dropdown quando necessário */
+.dropdown.open {
+  display: block;
+}
+
+/* Estilos para itens dentro do dropdown */
+.dropdownItem {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0; /* Linha separadora leve */
+  cursor: pointer; /* Mostra que o item é clicável */
+}
+
+/* Efeito de hover para itens do dropdown */
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+/* Estilos para links de navegação */
+.desktopNav a, .mobileNav a {
+  padding: 10px;
+  color: white; /* Cor do texto */
+  text-decoration: none; /* Remove o sublinhado dos links */
+}
+
+/* Efeito de hover para links */
+.desktopNav a:hover, .mobileNav a:hover {
+  background-color: #555; /* Escurece o fundo ao passar o mouse */
+}
+
+/* Mostra o botão de menu em dispositivos móveis quando a tela é pequena */
+@media (max-width: 768px) {
   .menuButton {
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .iconButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .dropdownContainer {
-    position: relative;
-  }
-  
-  .dropdown {
-    position: absolute;
-    background-color: white;
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    right: 0;
-    width: 200px;
-    z-index: 1050;
-    display: none;
-  }
-  
-  .dropdown.open {
-    display: block;
-  }
-  
-  .dropdownItem {
-    padding: 10px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-  }
-  
-  .dropdownItem:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .desktopNav a, .mobileNav a {
-    padding: 10px;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .desktopNav a:hover, .mobileNav a:hover {
-    background-color: #555;
-  }
-  
-  @media (max-width: 768px) {
-    .menuButton {
       display: flex;
-    }
   }
-  
+}
