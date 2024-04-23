@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useTable, useSortBy, useGlobalFilter } from 'react-table';
 import { Trash2, PlusCircle, Search } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext'; // Verifique o caminho
+import { useTheme } from '../contexts/ThemeContext';
 import Header from '../components/Header';
 
 const API_URL = 'http://localhost:8000/api/assets';
@@ -24,20 +24,22 @@ const EditableCell = ({
     setEditable(false);
   };
   const onClick = () => setEditable(true);
+  const { theme } = useTheme();
 
   return editable ? (
-    <input value={value} onChange={onChange} onBlur={onBlur} autoFocus className="w-full p-1 text-left bg-gray-100" />
+    <input value={value} onChange={onChange} onBlur={onBlur} autoFocus className={`w-full p-1 text-left ${theme === 'dark' ? 'text-white' : 'text-gray-900'} bg-transparent`} />
   ) : (
-    <div onClick={onClick} className="w-full p-1 text-left bg-gray-100 cursor-pointer">
+    <div onClick={onClick} className={`w-full p-1 text-left cursor-pointer ${theme === 'dark' ? 'text-white' : 'text-gray-900'} bg-transparent`}>
       {value || "Clique para editar"}
     </div>
   );
 };
 
+
 const AtivosPage = () => {
   const [data, setData] = useState([]);
   const [filterInput, setFilterInput] = useState('');
-  const { theme } = useTheme(); // Assume que useTheme é seu hook para contexto de tema
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchAssets = async () => {
@@ -105,7 +107,7 @@ const AtivosPage = () => {
         </button>
       )
     },
-  ], [updateMyData, handleDeleteAsset]);
+  ], [updateMyData, handleDeleteAsset, theme]);
 
   const {
     getTableProps,
@@ -120,13 +122,13 @@ const AtivosPage = () => {
     <div className={`flex flex-col min-h-screen ${theme}`}>
       <Header />
       <div className="container mx-auto px-4 py-4 mt-14">
-        <h1 className="text-3xl font-bold mb-4 py-5" style={{ marginTop: '30px', marginBottom: '30px' }}>Gerenciamento de Ativos</h1>
+        <h1 className="text-3xl font-bold mb-4 py-5">Gerenciamento de Ativos</h1>
         <div className="mb-4 flex justify-between items-center">
-          <button onClick={handleAddAsset} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
+          <button onClick={handleAddAsset} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
             <PlusCircle className="mr-2" size={20} /> Adicionar Ativo
           </button>
           <div className="relative w-64">
-            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
             <input
               type="text"
               placeholder="Buscar..."
@@ -135,31 +137,32 @@ const AtivosPage = () => {
                 setGlobalFilter(e.target.value);
                 setFilterInput(e.target.value);
               }}
-              className="pl-10 pr-4 py-2 border rounded focus:outline-none focus:border-blue-300 w-full"
+              className={`pl-10 pr-4 py-2 border rounded focus:outline-none focus:border-blue-300 w-full ${theme === 'dark' ? 'bg-gray-500 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
             />
           </div>
         </div>
-        <div className="overflow-x-auto bg-white rounded shadow">
+        <div className={`overflow-x-auto rounded shadow ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
           <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className={`${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900'}`}>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map(column => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       {column.render('Header')}
                     </th>
                   ))}
                 </tr>
               ))}
             </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map(row => {
+            <tbody {...getTableBodyProps()} className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+              {rows.map((row, index) => {
                 prepareRow(row);
+                const rowBgClass = index % 2 === 0 ? 'bg-opacity-50' : 'bg-opacity-75';
                 return (
-                  <tr {...row.getRowProps()}>
+                  <tr {...row.getRowProps()} className={`${rowBgClass} ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}`}>
                     {row.cells.map(cell => (
-                      <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap text-sm">
                         {cell.render('Cell')}
                       </td>
                     ))}

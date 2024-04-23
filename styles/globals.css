@@ -1,7 +1,27 @@
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Estilos globais adicionais */
 body {
   font-family: 'Inter', sans-serif;
+}
+
+/* Estilos específicos para tema claro */
+.light {
+  --color-text: #333;
+  --color-bg: #fff;
+}
+
+/* Estilos específicos para tema escuro */
+.dark {
+  --color-text: #fff;
+  --color-bg: #202020;
+}
+
+/* Utilizando variáveis CSS nos estilos Tailwind */
+html {
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }

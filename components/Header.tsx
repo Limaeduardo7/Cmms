@@ -1,23 +1,23 @@
 // Header.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { Menu, User, Bell, Sun, Moon } from 'lucide-react';
-import styles from './Header.module.css';
+import { useTheme } from '../contexts/ThemeContext'; // Certifique-se de que o caminho está correto
+import styles from './Header.module.css'; // Assumindo que você está usando CSS Modules
 
 const Header = () => {
-  const [theme, setTheme] = useState('light'); // Estado inicial do tema
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme(); // Use o contexto de tema
+  const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light'); // Alternar entre temas claros e escuros
-    document.documentElement.classList.toggle('dark'); // Adicionar ou remover a classe 'dark' no root do documento
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <header className={`${styles.header} ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
       <div className="flex items-center space-x-4">
-        <button className={`${styles.menuButton} lg:hidden`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        <button className={`${styles.menuButton} lg:hidden`} onClick={toggleMobileMenu}>
           <Menu className="h-6 w-6" />
         </button>
         <span>Harbinger CMMS</span>
