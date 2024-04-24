@@ -1,17 +1,11 @@
-# cmms/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
-from inventory.views import home_view
-
-def home(request):
-    return HttpResponse("Bem-vindo ao Sistema de Gestão CMMS!")
+from inventory.views import home_view  # 'home' view parece não ser mais necessária
 
 urlpatterns = [
-    path('api/', include('inventory.urls')),
-    path('', home_view, name='home'),    
-    path('admin/', admin.site.urls),
-    path('maintenance/', include('maintenance.urls')),  # Certifique-se de que está correto
-    path('inventory/', include('inventory.urls'))
-    
+    path('', home_view, name='home'),  # Rota home principal usando 'home_view'
+    path('admin/', admin.site.urls),  # Admin do Django
+    path('api/inventory/', include(('inventory.urls', 'inventory'), namespace='inventory-api')),  # API sob namespace
+    path('inventory/', include(('inventory.urls', 'inventory'), namespace='inventory')),  # Uso geral do inventory
+    path('maintenance/', include(('maintenance.urls', 'maintenance'), namespace='maintenance')),  # Uso geral do maintenance
 ]

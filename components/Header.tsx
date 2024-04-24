@@ -33,12 +33,12 @@ const Header = () => {
         </nav>
       )}
       <nav className={`hidden lg:flex space-x-4 ${styles.desktopNav}`}>
+        <a href="/dashboard">Dashboard</a>
         <a href="/ativos">Ativos</a>
         <a href="/ordens-de-servico">Ordens de Serviço</a>
         <a href="/planejamento">Planejamento</a>
         <a href="/categorias">Categorias</a>
         <a href="/responsaveis">Responsáveis</a>
-        <a href="/dashboard">Dashboard</a>
       </nav>
       <div className="flex items-center space-x-8">
         <button onClick={toggleTheme} className={styles.iconButton}>

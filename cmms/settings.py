@@ -1,5 +1,6 @@
 # Importando Path de pathlib
 from pathlib import Path
+import os
 
 # Definição de BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Adicione seus apps personalizados aqui
+    'rest_framework',
     'inventory',
     'maintenance',
 ]
@@ -94,9 +95,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Define a pasta para coletar os arquivos estáticos
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # Adiciona um diretório de arquivos estáticos ao nível do projeto
+    os.path.join(BASE_DIR, 'static'),  # Certifique-se de que este caminho existe
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10  # Define quantos itens por página
+}
+

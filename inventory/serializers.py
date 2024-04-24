@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Asset, Category, Responsible
+from .models import InventoryAsset, Category, Responsible
 
-class AssetSerializer(serializers.ModelSerializer):
+class InventoryAssetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Asset
+        model = InventoryAsset
         fields = '__all__'  # Isso inclui todos os campos do modelo no serializador
 
 class CategorySerializer(serializers.ModelSerializer):

@@ -29,5 +29,13 @@ class Responsible(models.Model):
     cargo = models.CharField(max_length=100)
     email = models.EmailField()    
 
+class InventoryAsset(models.Model):
+    nome = models.CharField(max_length=255)
+    categoria = models.CharField(max_length=255)
+    # Adicione mais campos conforme necessário
+
+    class Meta:
+        db_table = 'inventory_inventory_asset'  # Tabela única para InventoryAsset
+
     def __str__(self):
         return f"{self.nome} - {self.departamento}"
