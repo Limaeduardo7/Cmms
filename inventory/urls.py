@@ -22,5 +22,4 @@ urlpatterns = [
     path('assets/<int:pk>/delete/', AssetDeleteView.as_view(), name='asset-delete'),
 
     # URL para incluir as URLs da API RESTful configuradas pelo Django REST Framework's router
-    path('api/', include(router.urls)),  # Adiciona as URLs do viewset à base 'api/'
 ]

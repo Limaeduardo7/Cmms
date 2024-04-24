@@ -11,7 +11,7 @@ const EditableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
-  updateMyData, // Esta função precisa ser passada corretamente
+  updateMyData, // Função para atualizar dados
   theme
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -21,7 +21,7 @@ const EditableCell = ({
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value); // Chamada de função
+      updateMyData(index, id, value);
     }
     setEditable(false);
   };
@@ -69,37 +69,52 @@ const AtivosPage = () => {
         console.error("Erro ao buscar dados", error);
       }
     };
-  
     fetchAssets();
   }, []);
 
-  const updateMyData = useCallback((rowIndex, columnId, value) => {
-    const newData = [...data];
-    newData[rowIndex] = {...newData[rowIndex], [columnId]: value};
-    setData(newData);
+  const updateMyData = useCallback(async (rowIndex, columnId, newValue) => {
+    const assetId = data[rowIndex].id;
+    const updatedAsset = { ...data[rowIndex], [columnId]: newValue };
+    try {
+      const response = await axios.put(`${API_URL}/${assetId}`, updatedAsset);
+      const newData = [...data];
+      newData[rowIndex] = response.data;
+      setData(newData);
+    } catch (error) {
+      console.error("Erro ao atualizar dados", error);
+    }
   }, [data]);
 
-  const handleAddAsset = useCallback(() => {
+  const handleAddAsset = useCallback(async () => {
     const newAsset = {
-      id: data.length + 1, // Simulated new ID, normally use UUID or similar
-      nome: 'Novo Ativo',
-      categoria: 'Categoria',
-      status: 'Ativo',
-      data_aquisicao: new Date().toISOString().slice(0, 10),
-      custo_aquisicao: 1000,
-      valor_atual: 1500,
-      fornecedor: 'Fornecedor Exemplo',
-      numero_serie: 'ABC123456',
-      informacoes_garantia: 'Garantia Limitada',
-      responsavel: 'Admin',
-      proxima_manutencao: new Date().toISOString().slice(0, 10),
-      notas: 'N/A'
+      nome: '',
+      categoria: '',
+      status: '',
+      data_aquisicao: '',
+      custo_aquisicao: null,
+      valor_atual: null,
+      fornecedor: '',
+      numero_serie: '',
+      informacoes_garantia: '',
+      responsavel: '',
+      proxima_manutencao: '',
+      notas: ''
     };
-    setData([newAsset, ...data]); // Adiciona o novo ativo no topo da lista
+    try {
+      const response = await axios.post(API_URL, newAsset);
+      setData([response.data, ...data]);
+    } catch (error) {
+      console.error("Erro ao adicionar ativo", error);
+    }
   }, [data]);
 
-  const handleDeleteAsset = useCallback((id) => {
-    setData(currentData => currentData.filter(asset => asset.id !== id));
+  const handleDeleteAsset = useCallback(async (id) => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      setData(currentData => currentData.filter(asset => asset.id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar ativo", error);
+    }
   }, []);
 
   const columns = useMemo(() => [
