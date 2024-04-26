@@ -4,7 +4,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import InventoryAssetSerializer
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -15,6 +17,7 @@ class InventoryAssetViewSet(viewsets.ModelViewSet):
     queryset = InventoryAsset.objects.all()
     serializer_class = InventoryAssetSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
 
 
 class CategoryListView(ListView):
@@ -41,6 +44,9 @@ class AssetCreateView(CreateView):
     fields = ['nome', 'categoria', 'status', 'data_aquisicao', 'custo_aquisicao', 'valor_atual', 'fornecedor', 'numero_serie', 'informacoes_garantia', 'responsavel', 'proxima_manutencao', 'notas']
     template_name = 'inventory/asset_form.html'
     success_url = '/inventory/assets/'
+    def form_valid(self, form):
+        # Lógica adicional antes de salvar o objeto, se necessário
+        return super().form_valid(form)
 
 class AssetDeleteView(DeleteView):
     model = InventoryAsset
@@ -49,7 +55,3 @@ class AssetDeleteView(DeleteView):
 
 def home_view(request):
     return render(request, 'home.html')
-
-class InventoryAssetViewSet(viewsets.ModelViewSet):
-    queryset = InventoryAsset.objects.all()
-    serializer_class = InventoryAssetSerializer

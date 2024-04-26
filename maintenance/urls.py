@@ -13,12 +13,11 @@ from .views import (
 app_name = 'maintenance'
 
 urlpatterns = [
-    path('', MaintenanceScheduleListView.as_view(), name='maintenance_schedule_list'),
-    path('<int:pk>/', MaintenanceScheduleDetailView.as_view(), name='maintenance_schedule_detail'),
-    path('create/', MaintenanceScheduleCreateView.as_view(), name='maintenance_schedule_create'),
-    path('<int:pk>/update/', MaintenanceScheduleUpdateView.as_view(), name='maintenance_schedule_update'),
-    path('<int:pk>/delete/', MaintenanceScheduleDeleteView.as_view(), name='maintenance_schedule_delete'),
-    path('responsibles/', ResponsibleListView.as_view(), name='responsible-list'),
-    path('work-orders/', WorkOrderListView.as_view(), name='work-order-list'),  # Adicionado nova URL para listar ordens de serviço
-    # ... outras URLs conforme necessário
+    path('schedules/', MaintenanceScheduleListView.as_view(), name='maintenance_schedule_list'),
+    path('schedules/<int:pk>/', MaintenanceScheduleDetailView.as_view(), name='maintenance_schedule_detail'),
+    path('schedules/create/', MaintenanceScheduleCreateView.as_view(), name='maintenance_schedule_create'),
+    path('schedules/<int:pk>/update/', MaintenanceScheduleUpdateView.as_view(), name='maintenance_schedule_update'),
+    path('schedules/<int:pk>/delete/', MaintenanceScheduleDeleteView.as_view(), name='maintenance_schedule_delete'),
+    path('work-orders/', WorkOrderListView.as_view(), name='work_order_list'),
+    path('responsibles/', ResponsibleListView.as_view(), name='responsible_list'),
 ]

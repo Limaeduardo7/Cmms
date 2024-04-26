@@ -35,7 +35,7 @@ const Header = () => {
       <nav className={`hidden lg:flex space-x-4 ${styles.desktopNav}`}>
         <a href="/dashboard">Dashboard</a>
         <a href="/ativos">Ativos</a>
-        <a href="/ordens-de-servico">Ordens de Serviço</a>
+        <a href="/ordens-servico">Ordens de Serviço</a>
         <a href="/planejamento">Planejamento</a>
         <a href="/categorias">Categorias</a>
         <a href="/responsaveis">Responsáveis</a>

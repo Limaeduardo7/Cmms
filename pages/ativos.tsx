@@ -78,12 +78,12 @@ const AtivosPage = () => {
     try {
       const response = await axios.put(`${API_URL}/${assetId}`, updatedAsset);
       const newData = [...data];
-      newData[rowIndex] = response.data;
+      newData[rowIndex] = response.data;  // Certifique-se de que esta linha está corretamente atualizando o item
       setData(newData);
     } catch (error) {
       console.error("Erro ao atualizar dados", error);
     }
-  }, [data]);
+  }, [data]);  
 
   const handleAddAsset = useCallback(async () => {
     const newAsset = {
@@ -102,6 +102,7 @@ const AtivosPage = () => {
     };
     try {
       const response = await axios.post(API_URL, newAsset);
+      if (response.status === 200)
       setData([response.data, ...data]);
     } catch (error) {
       console.error("Erro ao adicionar ativo", error);
