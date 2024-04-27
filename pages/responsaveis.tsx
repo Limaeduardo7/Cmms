@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import Header from '../components/Header';
+import { useTheme } from '../client/contexts/ThemeContext';
+import Header from '../client/components/Header';
 
 const API_URL = 'http://localhost:8000/api/maintenance/responsibles';
 

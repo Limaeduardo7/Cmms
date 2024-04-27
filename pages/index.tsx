@@ -1,8 +1,8 @@
-import Layout from '../components/Layout';
+import Layout from '../client/components/Layout';
 
 export default function Home() {
     return (
-        <Layout title="Página Inicial - Sistema de Gestão CMMS">
+        <Layout pageTitle="Página Inicial - Sistema de Gestão CMMS">
             <h1>Bem-vindo ao Sistema de Gestão CMMS!</h1>
             <p>Este é o sistema central para gerenciar manutenções e inventários.</p>
             <div>

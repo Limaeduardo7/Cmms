@@ -1,5 +1,5 @@
 // pages/dashboard.js
-import Layout from '../components/Layout';
+import Layout from '../client/components/Layout';
 
 export default function Dashboard() {
     return (
