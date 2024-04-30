@@ -5,7 +5,7 @@ import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 
-const API_URL = 'http://localhost:8000/api/assets';
+const API_URL = 'http://localhost:3001/api/assets';
 
 const EditableCell = ({
   value: initialValue,
@@ -102,12 +102,13 @@ const AtivosPage = () => {
     };
     try {
       const response = await axios.post(API_URL, newAsset);
-      if (response.status === 200)
-      setData([response.data, ...data]);
+      if (response.status === 201) {  // Verifica se a resposta indica criação bem-sucedida
+        setData(currentData => [response.data, ...currentData]); // Adiciona o novo ativo no início da lista
+      }
     } catch (error) {
       console.error("Erro ao adicionar ativo", error);
     }
-  }, [data]);
+  }, [setData]);  // `setData` deve ser incluído nas dependências do useCallback
 
   const handleDeleteAsset = useCallback(async (id) => {
     try {
