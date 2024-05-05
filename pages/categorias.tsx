@@ -5,13 +5,13 @@ import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 
-const API_URL = 'http://localhost:8000/api/inventory_categories';
+const API_URL = 'http://localhost:3001/api/categorias';
 
 const EditableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
-  updateMyData, // This function needs to be correctly passed
+  updateMyData, // Esta função é passada aqui
   theme
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -21,14 +21,14 @@ const EditableCell = ({
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value);
+      updateMyData(index, id, value);  // Chamada à função updateMyData
     }
     setEditable(false);
   };
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
-      onBlur(); // Save the value and close the editor
+      onBlur();
     }
   };
 
@@ -72,17 +72,16 @@ const CategoriesPage = () => {
     fetchCategories();
   }, []);
 
-  const updateMyData = useCallback(async (rowIndex, columnId, newValue) => {
+  const updateMyData = useCallback((rowIndex, columnId, newValue) => {
     const categoryId = data[rowIndex].id;
     const updatedCategory = { ...data[rowIndex], [columnId]: newValue };
-    try {
-      const response = await axios.put(`${API_URL}/${categoryId}`, updatedCategory);
-      const newData = [...data];
-      newData[rowIndex] = response.data;
-      setData(newData);
-    } catch (error) {
-      console.error("Error updating category", error);
-    }
+    axios.put(`${API_URL}/${categoryId}`, updatedCategory)
+      .then(response => {
+        const newData = [...data];
+        newData[rowIndex] = response.data;
+        setData(newData);
+      })
+      .catch(error => console.error("Error updating category", error));
   }, [data]);
 
   const handleAddCategory = useCallback(() => {
@@ -91,22 +90,21 @@ const CategoriesPage = () => {
       descricao: '',
       ativo: true
     };
-    setData([newCategory, ...data]);
-  }, [data]);
+    axios.post(API_URL, newCategory).then(response => {
+      setData(currentData => [response.data, ...currentData]);
+    }).catch(error => console.error("Error adding category", error));
+  }, []);
 
   const handleDeleteCategory = useCallback((id) => {
-    try {
-      axios.delete(`${API_URL}/${id}`);
+    axios.delete(`${API_URL}/${id}`).then(() => {
       setData(currentData => currentData.filter(category => category.id !== id));
-    } catch (error) {
-      console.error("Error deleting category", error);
-    }
+    }).catch(error => console.error("Error deleting category", error));
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Nome', accessor: 'nome', Cell: EditableCell },
-    { Header: 'Descrição', accessor: 'descricao', Cell: EditableCell },
-    { Header: 'Ativo', accessor: 'ativo', Cell: EditableCell },
+    { Header: 'Nome', accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Descrição', accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Ativo', accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
       Header: 'Ações',
       id: 'actions',
@@ -142,8 +140,8 @@ const CategoriesPage = () => {
     <div className={`flex flex-col min-h-screen ${theme}`}>
       <Header />
       <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Categorias</h1>
-          <div className="mb-4 flex justify-between items-center">
+        <h1 className="text-3xl font-bold mb-4 py-5">Categorias</h1>
+        <div className="mb-4 flex justify-between items-center">
           <button onClick={handleAddCategory} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
             <PlusCircle className="mr-2" size={20} /> Adicionar Categoria
           </button>

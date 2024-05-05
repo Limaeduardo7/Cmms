@@ -9,12 +9,13 @@ const Layout = ({ children, pageTitle }) => {
     <div className={`flex h-screen ${theme}`}>  // Adiciona a classe de tema ao elemento raiz
       <Sidebar />
       <div className="flex-1">
-        <header className={`bg-white shadow ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight">{pageTitle}</h1>
-          </div>
-        </header>
-        <main>{children}</main>
+      <header className={`w-full bg-white shadow ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+  <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
+    <h1 className="text-3xl font-bold tracking-tight">{pageTitle}</h1>
+  </div>
+</header>
+<main className="w-full">{children}</main>
+
       </div>
     </div>
   );

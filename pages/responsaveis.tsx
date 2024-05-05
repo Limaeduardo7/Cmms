@@ -5,13 +5,13 @@ import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 
-const API_URL = 'http://localhost:8000/api/maintenance/responsibles';
+const API_URL = 'http://localhost:3001/api/responsaveis';
 
 const EditableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
-  updateMyData,
+  updateMyData, // Confirme que esta propriedade está sendo recebida corretamente
   theme
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -21,7 +21,7 @@ const EditableCell = ({
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value);
+      updateMyData(index, id, value); // Garantir que esta função é chamada corretamente
     }
     setEditable(false);
   };
@@ -55,6 +55,7 @@ const EditableCell = ({
   );
 };
 
+
 const ResponsiblePage = () => {
   const [data, setData] = useState([]);
   const [filterInput, setFilterInput] = useState('');
@@ -72,20 +73,19 @@ const ResponsiblePage = () => {
     fetchResponsibles();
   }, []);
 
-  const updateMyData = useCallback(async (rowIndex, columnId, newValue) => {
+  const updateMyData = useCallback((rowIndex, columnId, newValue) => {
     const responsibleId = data[rowIndex].id;
     const updatedResponsible = { ...data[rowIndex], [columnId]: newValue };
-    try {
-      const response = await axios.put(`${API_URL}/${responsibleId}`, updatedResponsible);
-      const newData = [...data];
-      newData[rowIndex] = response.data;
-      setData(newData);
-    } catch (error) {
-      console.error("Erro ao atualizar responsável", error);
-    }
-  }, [data]);
+    axios.put(`${API_URL}/${responsibleId}`, updatedResponsible)
+      .then(response => {
+        const newData = [...data];
+        newData[rowIndex] = response.data;
+        setData(newData);
+      })
+      .catch(error => console.error("Erro ao atualizar responsável", error));
+  }, [data]); // Certifique-se de incluir [data] nas dependências
 
-  const handleAddResponsible = useCallback(async () => {
+  const handleAddResponsible = useCallback(() => {
     const newResponsible = {
       nome: '',
       telefone: '',
@@ -94,30 +94,28 @@ const ResponsiblePage = () => {
       cargo: '',
       email: ''
     };
-    try {
-      const response = await axios.post(API_URL, newResponsible);
-      setData([response.data, ...data]);
-    } catch (error) {
-      console.error("Erro ao adicionar responsável", error);
-    }
-  }, [data]);
+    axios.post(API_URL, newResponsible)
+      .then(response => {
+        setData([response.data, ...data]);
+      })
+      .catch(error => console.error("Erro ao adicionar responsável", error));
+  }, [data]); // Inclua [data] nas dependências
 
-  const handleDeleteResponsible = useCallback(async (id) => {
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      setData(currentData => currentData.filter(responsible => responsible.id !== id));
-    } catch (error) {
-      console.error("Erro ao deletar responsável", error);
-    }
+  const handleDeleteResponsible = useCallback((id) => {
+    axios.delete(`${API_URL}/${id}`)
+      .then(() => {
+        setData(currentData => currentData.filter(responsible => responsible.id !== id));
+      })
+      .catch(error => console.error("Erro ao deletar responsável", error));
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Nome', accessor: 'nome', Cell: EditableCell },
-    { Header: 'Telefone', accessor: 'telefone', Cell: EditableCell },
-    { Header: 'Ativo', accessor: 'ativo', Cell: EditableCell },
-    { Header: 'Departamento', accessor: 'departamento', Cell: EditableCell },
-    { Header: 'Cargo', accessor: 'cargo', Cell: EditableCell },
-    { Header: 'Email', accessor: 'email', Cell: EditableCell },
+    { Header: 'Nome', accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Telefone', accessor: 'telefone', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Ativo', accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Departamento', accessor: 'departamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Cargo', accessor: 'cargo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Email', accessor: 'email', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
       Header: 'Ações',
       id: 'actions',
@@ -129,6 +127,7 @@ const ResponsiblePage = () => {
       )
     }
   ], [updateMyData, handleDeleteResponsible, theme]);
+  
 
   const {
     getTableProps,
@@ -153,7 +152,7 @@ const ResponsiblePage = () => {
     <div className={`flex flex-col min-h-screen ${theme}`}>
       <Header />
       <div className="container mx-auto px-4 py-4 mt-14">
-        <h1 className="text-3xl font-bold mb-4 py-5">Gerenciamento de Responsáveis</h1>
+        <h1 className="text-3xl font-bold mb-4 py-5">Responsáveis</h1>
         <div className="mb-4 flex justify-between items-center">
           <button onClick={handleAddResponsible} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
             <PlusCircle className="mr-2" size={20} /> Adicionar Responsável

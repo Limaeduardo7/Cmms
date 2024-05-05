@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "client/components/Layout.js", "client/components/Layout.js"  ],
+, "client/components/Layout.js", "client/components/Layout.js", "client/components/BarChart.tsx"  ],
   "exclude": [
     "node_modules"
   ]

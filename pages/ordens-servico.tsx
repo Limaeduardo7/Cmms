@@ -5,33 +5,30 @@ import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 
-const API_URL = 'http://localhost:8000/api/maintenance_workorders';
+const API_URL = 'http://localhost:3001/api/ordens_servicos';
 
 const EditableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
-  updateMyData, // Função para atualizar dados
+  updateMyData,
   theme
 }) => {
   const [value, setValue] = useState(initialValue);
   const [editable, setEditable] = useState(false);
 
   const onChange = (e) => setValue(e.target.value);
-
   const onBlur = () => {
     if (value !== initialValue) {
       updateMyData(index, id, value);
     }
     setEditable(false);
   };
-
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
       onBlur();
     }
   };
-
   const onClick = () => setEditable(true);
 
   return editable ? (
@@ -72,60 +69,55 @@ const WorkOrdersPage = () => {
     fetchWorkOrders();
   }, []);
 
-  const updateMyData = useCallback(async (rowIndex, columnId, newValue) => {
+  const updateMyData = useCallback((rowIndex, columnId, newValue) => {
     const workOrderId = data[rowIndex].id;
     const updatedWorkOrder = { ...data[rowIndex], [columnId]: newValue };
-    try {
-      const response = await axios.put(`${API_URL}/${workOrderId}`, updatedWorkOrder);
-      const newData = [...data];
-      newData[rowIndex] = response.data;
-      setData(newData);
-    } catch (error) {
-      console.error("Erro ao atualizar ordem de serviço", error);
-    }
+    axios.put(`${API_URL}/${workOrderId}`, updatedWorkOrder)
+      .then(response => {
+        const newData = [...data];
+        newData[rowIndex] = response.data;
+        setData(newData);
+      })
+      .catch(error => console.error("Erro ao atualizar ordem de serviço", error));
   }, [data]);
 
   const handleAddWorkOrder = useCallback(() => {
     const newWorkOrder = {
       descricao: '',
-      tipo_manutencao: 'Preventiva',
-      status: 'Pendente',
-      data_criacao: new Date().toISOString().slice(0, 10),
+      tipo_manutencao: '',
+      status: '',
+      data_criacao: '',
       data_agendamento: '',
       data_conclusao: '',
-      prioridade: 'Normal',
+      prioridade: '',
       responsavel: '',
-      ativo_relacionado: null,
       custo_estimado: 0,
       custo_real: 0,
-      notas: '',
-      anexos: {},  // Pode ser necessário ajustar conforme o formato esperado
-      historico: {}
+      notas: ''
     };
-    setData([newWorkOrder, ...data]);
-  }, [data]);
+    axios.post(API_URL, newWorkOrder).then(response => {
+      setData(currentData => [response.data, ...currentData]);
+    }).catch(error => console.error("Erro ao adicionar ordem de serviço", error));
+  }, []);
 
   const handleDeleteWorkOrder = useCallback((id) => {
-    try {
-      axios.delete(`${API_URL}/${id}`);
+    axios.delete(`${API_URL}/${id}`).then(() => {
       setData(currentData => currentData.filter(workOrder => workOrder.id !== id));
-    } catch (error) {
-      console.error("Erro ao deletar ordem de serviço", error);
-    }
+    }).catch(error => console.error("Erro ao deletar ordem de serviço", error));
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Descrição', accessor: 'descricao' },
-    { Header: 'Tipo de Manutenção', accessor: 'tipo_manutencao' },
-    { Header: 'Status', accessor: 'status' },
-    { Header: 'Data de Criação', accessor: 'data_criacao' },
-    { Header: 'Data de Agendamento', accessor: 'data_agendamento' },
-    { Header: 'Data de Conclusão', accessor: 'data_conclusao' },
-    { Header: 'Prioridade', accessor: 'prioridade' },
-    { Header: 'Responsável', accessor: 'responsavel' },
-    { Header: 'Custo Estimado', accessor: 'custo_estimado', Cell: EditableCell },
-    { Header: 'Custo Real', accessor: 'custo_real', Cell: EditableCell },
-    { Header: 'Notas', accessor: 'notas', Cell: EditableCell },
+    { Header: 'Descrição', accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Tipo de Manutenção', accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Status', accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Data de Criação', accessor: 'data_criacao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Data de Agendamento', accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Data de Conclusão', accessor: 'data_conclusao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Prioridade', accessor: 'prioridade', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Responsável', accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Custo Estimado', accessor: 'custo_estimado', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Custo Real', accessor: 'custo_real', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: 'Notas', accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: 'Ações', id: 'actions', Cell: ({ row }) => (
         <button onClick={() => handleDeleteWorkOrder(row.original.id)}
           className="text-red-500 hover:text-red-700">
