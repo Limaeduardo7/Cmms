@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactECharts from 'echarts-for-react';  // Assumindo que está usando ECharts
+import ReactECharts from 'echarts-for-react';
 
 const BarChart = ({ data, title, theme }) => {
   const getOptions = () => {
@@ -7,25 +7,21 @@ const BarChart = ({ data, title, theme }) => {
       title: {
         text: title,
         textStyle: {
-          color: theme === 'dark' ? '#FFFFFF' : '#000000',  // Cor do título baseada no tema
-        }
+          color: theme === 'dark' ? '#FFFFFF' : '#000000',
+        },
       },
-      tooltip: {
-        trigger: 'axis'
-      },
+      tooltip: {},
       xAxis: {
         type: 'category',
-        data: data.map(item => item.label)
+        data: data.map(item => item.label),
       },
       yAxis: {
-        type: 'value'
+        type: 'value',
       },
-      series: [
-        {
-          data: data.map(item => item.value),
-          type: 'bar'
-        }
-      ]
+      series: [{
+        data: data.map(item => item.value),
+        type: 'bar',
+      }],
     };
   };
 
