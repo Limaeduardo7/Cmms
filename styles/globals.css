@@ -20,6 +20,52 @@ body {
   --color-bg: #202020;
 }
 
+/* styles/globals.css */
+.loading-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-10%);
+  background: var(--background-color); /* Ajuste isso de acordo com o tema */
+}
+
+/* styles/globals.css */
+:root {
+  --background-color: #FFF;  /* Cor de fundo para tema claro */
+  --loading-color: #000;     /* Cor de carregamento para tema claro */
+}
+
+.dark {
+  --background-color: #333;  /* Cor de fundo para tema escuro */
+  --loading-color: #FFF;     /* Cor de carregamento para tema escuro */
+}
+
+.loading-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-color);
+}
+
+.loading-infinity {
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  border: 4px solid transparent;
+  border-radius: 50%;
+  border-top-color: var(--loading-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Utilizando variáveis CSS nos estilos Tailwind */
 html {
   color: var(--color-text);
