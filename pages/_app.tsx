@@ -1,7 +1,7 @@
-// pages/_app.js
 import '../styles/globals.css';
-import { ThemeProvider } from '../client/contexts/ThemeContext'; // Certifique-se de que o caminho está correto
-
+import { ThemeProvider } from '../client/contexts/ThemeContext';
+import { appWithTranslation } from 'next-i18next';
+import '../i18n'; // Certifique-se de importar o i18n aqui
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -11,4 +11,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

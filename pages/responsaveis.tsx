@@ -4,24 +4,20 @@ import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3001/api/responsaveis';
 
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData, // Confirme que esta propriedade está sendo recebida corretamente
-  theme
-}) => {
+const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
   const [value, setValue] = useState(initialValue);
   const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
 
   const onChange = (e) => setValue(e.target.value);
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value); // Garantir que esta função é chamada corretamente
+      updateMyData(index, id, value);
     }
     setEditable(false);
   };
@@ -50,13 +46,13 @@ const EditableCell = ({
     />
   ) : (
     <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
-      {value || "Clique para editar"}
+      {value || t('click_to_edit')}
     </div>
   );
 };
 
-
 const ResponsiblePage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [filterInput, setFilterInput] = useState('');
   const { theme } = useTheme();
@@ -68,8 +64,8 @@ const ResponsiblePage = () => {
         const response = await axios.get(API_URL);
         setData(response.data);
         setTimeout(() => {
-          setIsLoading(false); // Set loading to false after 2 seconds
-        }, 1000); // 2 seconds duration
+          setIsLoading(false);
+        }, 1000);
       } catch (error) {
         console.error("Erro ao buscar responsáveis", error);
         setIsLoading(false);
@@ -88,7 +84,7 @@ const ResponsiblePage = () => {
         setData(newData);
       })
       .catch(error => console.error("Erro ao atualizar responsável", error));
-  }, [data]); // Certifique-se de incluir [data] nas dependências
+  }, [data]);
 
   const handleAddResponsible = useCallback(() => {
     const newResponsible = {
@@ -104,7 +100,7 @@ const ResponsiblePage = () => {
         setData([response.data, ...data]);
       })
       .catch(error => console.error("Erro ao adicionar responsável", error));
-  }, [data]); // Inclua [data] nas dependências
+  }, [data]);
 
   const handleDeleteResponsible = useCallback((id) => {
     axios.delete(`${API_URL}/${id}`)
@@ -115,14 +111,14 @@ const ResponsiblePage = () => {
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Nome', accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Telefone', accessor: 'telefone', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Ativo', accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Departamento', accessor: 'departamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Cargo', accessor: 'cargo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Email', accessor: 'email', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('name'), accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('phone'), accessor: 'telefone', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('active'), accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('department'), accessor: 'departamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('position'), accessor: 'cargo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('email'), accessor: 'email', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
-      Header: 'Ações',
+      Header: t('actions'),
       id: 'actions',
       Cell: ({ row }) => (
         <button onClick={() => handleDeleteResponsible(row.original.id)}
@@ -131,8 +127,7 @@ const ResponsiblePage = () => {
         </button>
       )
     }
-  ], [updateMyData, handleDeleteResponsible, theme]);
-  
+  ], [updateMyData, handleDeleteResponsible, theme, t]);
 
   const {
     getTableProps,
@@ -161,17 +156,17 @@ const ResponsiblePage = () => {
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
-        <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Responsáveis</h1>
+        <div className="container mx-auto px-4 py-4 mt-2">
+          <h1 className="text-3xl font-bold mb-4 py-5">{t('responsibles')}</h1>
           <div className="mb-4 flex justify-between items-center">
             <button onClick={handleAddResponsible} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
-              <PlusCircle className="mr-2" size={20} /> Adicionar Responsável
+              <PlusCircle className="mr-2" size={20} /> {t('add_responsible')}
             </button>
             <div className="relative w-64">
               <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('search')}
                 value={filterInput}
                 onChange={e => {
                   setGlobalFilter(e.target.value);
@@ -220,10 +215,7 @@ const ResponsiblePage = () => {
                 {'<'}
               </button>
               <span className={`mx-3 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                Página{' '}
-                <strong>
-                  {pageIndex + 1} de {Math.ceil(data.length / pageSize)}
-                </strong>
+                {t('page')} <strong>{pageIndex + 1} {t('of')} {Math.ceil(data.length / pageSize)}</strong>
               </span>
               <button onClick={() => nextPage()} disabled={!canNextPage} className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                 {'>'}
@@ -234,7 +226,7 @@ const ResponsiblePage = () => {
                 className={`border rounded px-2 ml-3 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                 {[10, 20, 30, 50].map(size => (
                   <option key={size} value={size}>
-                    Mostrar {size}
+                    {t('show')} {size}
                   </option>
                 ))}
               </select>

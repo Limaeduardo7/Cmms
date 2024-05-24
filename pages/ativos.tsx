@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { useTheme } from '../client/contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import Header from '../client/components/Header';
 
 const API_URL = 'http://localhost:3001/api/assets';
@@ -34,6 +35,8 @@ const EditableCell = ({
 
   const onClick = () => setEditable(true);
 
+  const { t } = useTranslation();
+
   return editable ? (
     <input
       type="text"
@@ -50,12 +53,13 @@ const EditableCell = ({
     />
   ) : (
     <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
-      {value || "Clique para editar"}
+      {value || t("click_to_edit")}
     </div>
   );
 };
 
 const AtivosPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterInput, setFilterInput] = useState('');
@@ -127,7 +131,7 @@ const AtivosPage = () => {
 
   const columns = useMemo(() => [
     {
-      Header: 'Nome',
+      Header: t('name'),
       accessor: 'nome',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -142,7 +146,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Categoria',
+      Header: t('category'),
       accessor: 'categoria',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -157,7 +161,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Status',
+      Header: t('status'),
       accessor: 'status',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -172,7 +176,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Data de Aquisição',
+      Header: t('acquisition_date'),
       accessor: 'data_aquisicao',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -187,7 +191,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Custo de Aquisição',
+      Header: t('acquisition_cost'),
       accessor: 'custo_aquisicao',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -202,7 +206,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Valor Atual',
+      Header: t('current_value'),
       accessor: 'valor_atual',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -217,7 +221,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Fornecedor',
+      Header: t('supplier'),
       accessor: 'fornecedor',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -232,7 +236,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Número de Série',
+      Header: t('serial_number'),
       accessor: 'numero_serie',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -247,7 +251,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Informações de Garantia',
+      Header: t('warranty_information'),
       accessor: 'informacoes_garantia',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -262,7 +266,7 @@ const AtivosPage = () => {
       ),
     },
     {
-      Header: 'Responsável',
+      Header: t('responsible'),
       accessor: 'responsavel',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -277,7 +281,7 @@ const AtivosPage = () => {
       ),
      },
      {
-      Header: 'Próxima Manutenção',
+      Header: t('next_maintenance'),
       accessor: 'proxima_manutencao',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -292,7 +296,7 @@ const AtivosPage = () => {
       ),
      },
      {
-      Header: 'Notas',
+      Header: t('notes'),
       accessor: 'notas',
       Cell: ({ row, value, column }) => (
         <EditableCell
@@ -307,7 +311,7 @@ const AtivosPage = () => {
       ),
      },
      {
-      Header: 'Ações',
+      Header: t('actions'),
       id: 'actions',
       Cell: ({ row }) => (
         <button onClick={() => handleDeleteAsset(row.original.id)}
@@ -316,7 +320,7 @@ const AtivosPage = () => {
         </button>
       )
      }
-     ], [updateMyData, handleDeleteAsset, theme]);
+     ], [updateMyData, handleDeleteAsset, theme, t]);
      
      const {
       getTableProps,
@@ -339,33 +343,34 @@ const AtivosPage = () => {
      
      return (
       <div className={`flex flex-col min-h-screen ${theme}`}>
-        <Header />
-        <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Gerenciamento de Ativos</h1>
-          {isLoading ? (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
-              <div className="loading loading-dots loading-lg"></div>
-            </div>
-          ) : (
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <button onClick={handleAddAsset} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
-                  <PlusCircle className="mr-2" size={20} /> Adicionar Ativo
-                </button>
-                <div className="relative w-64">
-                  <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
-                  <input
-                    type="text"
-                    placeholder="Buscar..."
-                    value={filterInput}
-                    onChange={e => {
-                      setGlobalFilter(e.target.value);
-                      setFilterInput(e.target.value);
-                    }}
-                    className={`pl-10 pr-4 py-2 border rounded focus:outline-none focus:border-blue-300 w-full ${theme === 'dark' ? 'bg-gray-500 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
-                  />
-                </div>
-              </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
+            <div className="loading loading-dots loading-lg"></div>
+          </div>
+        ) : (
+          <>
+            <Header />
+            <div className="container mx-auto px-4 py-4 mt-2">
+  <h1 className="text-3xl font-bold mb-4 py-5">{t('asset_management')}</h1>
+  <div className="mb-4 flex justify-between items-center">
+    <button onClick={handleAddAsset} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
+      <PlusCircle className="mr-2" size={20} /> {t('add_asset')}
+    </button>
+    <div className="relative w-64">
+      <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
+      <input
+        type="text"
+        placeholder={t('search') + '...'}
+        value={filterInput}
+        onChange={e => {
+          setGlobalFilter(e.target.value);
+          setFilterInput(e.target.value);
+        }}
+        className={`pl-10 pr-4 py-2 border rounded focus:outline-none focus:border-blue-300 w-full ${theme === 'dark' ? 'bg-gray-500 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
+      />
+    </div>
+  </div>
+
               <div className={`overflow-x-auto rounded shadow ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                 <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
                   <thead className={`${theme === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900'}`}>
@@ -405,9 +410,9 @@ const AtivosPage = () => {
                     {'<'}
                   </button>
                   <span className={`mx-3 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                    Página{' '}
+                    {t('page')} {' '}
                     <strong>
-                      {pageIndex + 1} de {Math.ceil(data.length / pageSize)}
+                      {pageIndex + 1} {t('of')} {Math.ceil(data.length / pageSize)}
                     </strong>
                   </span>
                   <button onClick={() => nextPage()} disabled={!canNextPage} className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
@@ -419,15 +424,15 @@ const AtivosPage = () => {
                     className={`border rounded px-2 ml-3 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                     {[10, 20, 30, 50].map(size => (
                       <option key={size} value={size}>
-                        Mostrar {size}
+                        {t('show')} {size}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     );
   };

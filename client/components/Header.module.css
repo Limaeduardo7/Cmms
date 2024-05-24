@@ -1,84 +1,374 @@
 /* Estilos para o cabeçalho principal */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: #333; /* Cor de fundo do cabeçalho */
+.navbar {
+  background-color: #000; /* Fundo preto */
   color: white; /* Cor do texto */
-  padding: 10px 20px;
   display: flex;
   justify-content: space-between; /* Espaça os elementos filho uniformemente */
   align-items: center; /* Centraliza os elementos filho verticalmente */
-  z-index: 1000; /* Assegura que o cabeçalho fique acima de outros elementos */
+  padding: 10px 15px; /* Aumentar padding de 5px para 10px no topo e na parte inferior, 15px nos lados */
+  position: relative; /* Necessário para centralizar o título no mobile */
 }
 
-/* Estilos para o botão de menu em dispositivos móveis */
 .menuButton {
-  display: none; /* Escondido por padrão, mostrado em tela pequena */
-  align-items: center;
-  justify-content: center;
+  display: none;
 }
 
-/* Estilos para ícones clicáveis no cabeçalho */
-.iconButton {
+.navbar-start {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  display: none; /* Oculto por padrão */
+}
+
+.navbar-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px; /* Ajustar espaçamento entre os ícones */
+  min-width: 240px; /* Definir uma largura mínima suficiente */
+  flex-shrink: 0; /* Evita encolhimento */
+}
+
+.navbar-end .btn-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; /* Mostra que o elemento é clicável */
+  padding: 0;
+  height: 40px; /* Ajuste conforme necessário */
+  width: 40px;  /* Ajuste conforme necessário */
+  margin-top: 10px; /* Adicionar margem superior de 10px */
+  transition: background-color 0.3s, border 0.3s; /* Adicionar transição suave */
+  border-radius: 5px; /* Fundo arredondado */
 }
 
-/* Container para dropdowns, posicionamento relativo ao ícone */
-.dropdownContainer {
-  position: relative;
+.navbar-end .btn-circle:hover,
+.navbar-end .btn-circle:focus {
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo com cor clara */
 }
 
-/* Estilos para o menu dropdown */
-.dropdown {
-  position: absolute;
-  background-color: white;
-  color: black;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  right: 0;
-  width: 200px; /* Largura fixa para o dropdown */
-  z-index: 1050;
-  display: none; /* Escondido por padrão */
+.iconSpacing {
+  margin-right: 15px; /* Ajustar espaçamento entre os ícones */
+  margin-top: 5px; /* Adicionar margem superior de 5px */
 }
 
-/* Mostra o dropdown quando necessário */
-.dropdown.open {
+.notificationIcon {
+  margin-right: 15px; /* Ajustar espaçamento entre o ícone de notificação e o ícone de usuário */
+  margin-top: 5px; /* Adicionar margem superior de 5px */
+}
+
+/* Adicionar efeito de hover e foco nas opções do header */
+.navbar .btn,
+.navbar a {
+  transition: background-color 0.3s, border 0.3s; /* Adicionar transição suave */
+  border-radius: 5px; /* Fundo arredondado */
+  text-decoration: none; /* Remover sublinhado das opções do menu */
+}
+
+.navbar .btn:hover,
+.navbar .btn:focus,
+.navbar a:hover,
+.navbar a:focus {
+  background-color: rgba(255, 255, 255, 0.1); /* Fundo com cor clara */
+  text-decoration: none; /* Remover sublinhado das opções do menu */
+  padding: 5px; /* Adicionar padding de 5px em cada lado e em cima e embaixo */
+}
+
+/* Esconde os títulos conforme o tamanho da tela */
+.desktopTitle {
+  display: none;
+}
+
+.mobileTitle {
   display: block;
 }
 
-/* Estilos para itens dentro do dropdown */
-.dropdownItem {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0; /* Linha separadora leve */
-  cursor: pointer; /* Mostra que o item é clicável */
-}
-
-/* Efeito de hover para itens do dropdown */
-.dropdownItem:hover {
-  background-color: #f0f0f0;
-}
-
-/* Estilos para links de navegação */
-.desktopNav a, .mobileNav a {
-  padding: 10px;
+.dropdownContent {
+  display: none; /* Oculto por padrão */
+  position: absolute;
+  top: 100%; /* Ajuste conforme necessário */
+  left: 0; /* Alinha à esquerda no mobile */
+  background-color: #000; /* Fundo preto */
   color: white; /* Cor do texto */
-  text-decoration: none; /* Remove o sublinhado dos links */
+  padding: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 5px; /* Fundo arredondado */
 }
 
-/* Efeito de hover para links */
-.desktopNav a:hover, .mobileNav a:hover {
-  background-color: #555; /* Escurece o fundo ao passar o mouse */
+.dropdownUserMenu,
+.dropdownMobileMenu,
+.dropdownNotificationMenu {
+  display: block; /* Tornar visível */
+  background-color: #000; /* Fundo preto */
+  color: white; /* Cor do texto */
+  padding: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 5px; /* Fundo arredondado */
+  position: absolute; /* Certificar-se de que o dropdown é posicionado absolutamente */
 }
 
-/* Mostra o botão de menu em dispositivos móveis quando a tela é pequena */
-@media (max-width: 768px) {
-  .menuButton {
-      display: flex;
+.dropdownUserMenu {
+  right: 0; /* Encostar no limite direito da tela */
+}
+
+.dropdownMobileMenu {
+  left: 0; /* Alinha à esquerda no mobile */
+  top: 100%; /* Posiciona o dropdown na base do header */
+}
+
+.dropdownNotificationMenu {
+  right: 0; /* Encostar no limite direito da tela */
+  top: 100%; /* Posiciona o dropdown na base do header */
+  width: 350px; /* Largura do dropdown */
+  max-height: 400px; /* Altura máxima com rolagem */
+  overflow-y: auto; /* Habilitar rolagem vertical */
+}
+
+.dropdownUserMenu ul,
+.dropdownMobileMenu ul,
+.dropdownNotificationMenu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdownUserMenu li,
+.dropdownMobileMenu li,
+.dropdownNotificationMenu li {
+  padding: 10px;
+  text-align: center;
+}
+
+.dropdownNotificationMenu li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #444; /* Linha de separação entre notificações */
+}
+
+.dropdownNotificationMenu li:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Efeito de hover */
+}
+
+.dropdownNotificationMenu .notification-content {
+  flex-grow: 1;
+}
+
+.dropdownNotificationMenu .notification-time {
+  font-size: 0.8rem;
+  color: #bbb;
+}
+
+.notification-unread {
+  background-color: #444; /* Fundo diferente para notificações não lidas */
+}
+
+.dropdownNotificationMenu .notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.dropdownNotificationMenu .notification-header span {
+  flex-grow: 1;
+}
+
+.dropdownNotificationMenu .mark-all-read {
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dropdownNotificationMenu .mark-all-read:hover {
+  color: white;
+}
+
+/* Modal styles */
+.modal {
+  overflow-y: auto;
+  overflow-x: hidden;
+  fixed: top-0;
+  right: 0;
+  left: 0;
+  z-index: 50;
+  justify-center: items-center;
+  width: 100%;
+  height: calc(100% - 1rem);
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal-body form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-body form label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.modal-body form input,
+.modal-body form select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 0.875rem;
+}
+
+.modal-body form button {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.modal-body form button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para telas maiores */
+@media (min-width: 1024px) {
+  .navbar-start {
+    flex: 1;
   }
+  .navbar-center {
+    position: static;
+    transform: none;
+    flex: 1;
+    justify-content: center;
+    display: flex; /* Exibe o menu em telas maiores */
+  }
+  .desktopTitle {
+    display: block; /* Exibe o título em telas maiores */
+  }
+  .mobileTitle {
+    display: none; /* Esconde o título em telas maiores */
+  }
+  .navbar-end {
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 240px; /* Definir uma largura mínima para telas maiores */
+  }
+  .menu-horizontal {
+    display: flex;
+    gap: 1rem;
+  }
+  .desktopNav {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .desktopNav li {
+    margin-right: 1rem;
+  }
+  .desktopNav li a {
+    text-decoration: none;
+    color: white; /* Cor do texto */
+  }
+  .desktopNav li a:hover {
+    text-decoration: none; /* Remover sublinhado das opções do menu */
+  }
+}
+
+/* Estilos para telas menores */
+@media (max-width: 1023px) {
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .desktopTitle {
+    display: none; /* Esconde o título alinhado à esquerda em telas menores */
+  }
+  .navbar-center {
+    display: block; /* Exibe o título centralizado em telas menores */
+  }
+  .desktopNav {
+    display: none; /* Escondido em dispositivos móveis e tablets */
+  }
+  .dropdownContent {
+    display: block; /* Exibe o dropdown quando o menu é aberto */
+  }
+  .navbar-center .mobileTitle {
+    display: block; /* Exibe o título centralizado em telas menores */
+  }
+  .navbar-end {
+    flex: 1;
+    justify-content: flex-end;
+    gap: 15px; /* Ajustar espaçamento entre os ícones */
+    min-width: 240px; /* Definir uma largura mínima para telas menores */
+  }
+}
+
+.dropdownNotificationMenu .notification-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdownNotificationMenu .delete-notification {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdownNotificationMenu .delete-notification .h-4, 
+.dropdownNotificationMenu .delete-notification .w-4 {
+  height: 16px;
+  width: 16px;
 }

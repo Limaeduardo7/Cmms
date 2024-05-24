@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table';
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 
@@ -16,6 +17,7 @@ const EditableCell = ({
 }) => {
   const [value, setValue] = useState(initialValue);
   const [editable, setEditable] = useState(false);
+  const { t } = useTranslation('common');
 
   const onChange = (e) => setValue(e.target.value);
 
@@ -50,7 +52,7 @@ const EditableCell = ({
     />
   ) : (
     <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
-      {value || "Clique para editar"}
+      {value || t('click_to_edit')}
     </div>
   );
 };
@@ -59,6 +61,7 @@ const CategoriesPage = () => {
   const [data, setData] = useState([]);
   const [filterInput, setFilterInput] = useState('');
   const { theme } = useTheme();
+  const { t } = useTranslation('common');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -107,11 +110,11 @@ const CategoriesPage = () => {
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Nome', accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Descrição', accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Ativo', accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('nome'), accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('descricao'), accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('ativo'), accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
-      Header: 'Ações',
+      Header: t('actions'),
       id: 'actions',
       Cell: ({ row }) => (
         <button onClick={() => handleDeleteCategory(row.original.id)}
@@ -120,7 +123,7 @@ const CategoriesPage = () => {
         </button>
       )
     }
-  ], [updateMyData, handleDeleteCategory, theme]);
+  ], [updateMyData, handleDeleteCategory, theme, t]);
 
   const {
     getTableProps,
@@ -149,17 +152,17 @@ const CategoriesPage = () => {
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
-        <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Categorias</h1>
+        <div className="container mx-auto px-4 py-4 mt-2">
+          <h1 className="text-3xl font-bold mb-4 py-5">{t('categories')}</h1>
           <div className="mb-4 flex justify-between items-center">
             <button onClick={handleAddCategory} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
-              <PlusCircle className="mr-2" size={20} /> Adicionar Categoria
+              <PlusCircle className="mr-2" size={20} /> {t('add_category')}
             </button>
             <div className="relative w-64">
               <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('search') + '...'}
                 value={filterInput}
                 onChange={e => {
                   setGlobalFilter(e.target.value);
@@ -208,9 +211,9 @@ const CategoriesPage = () => {
                 {'<'}
               </button>
               <span className={`mx-3 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                Página{' '}
+                {t('page')} {' '}
                 <strong>
-                  {pageIndex + 1} de {Math.ceil(data.length / pageSize)}
+                  {pageIndex + 1} {t('of')} {Math.ceil(data.length / pageSize)}
                 </strong>
               </span>
               <button onClick={() => nextPage()} disabled={!canNextPage} className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
@@ -222,7 +225,7 @@ const CategoriesPage = () => {
                 className={`border rounded px-2 ml-3 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                 {[10, 20, 30, 50].map(size => (
                   <option key={size} value={size}>
-                    Mostrar {size}
+                    {t('show')} {size}
                   </option>
                 ))}
               </select>

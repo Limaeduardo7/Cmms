@@ -4,31 +4,30 @@ import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3001/api/ordens_servicos';
 
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData,
-  theme
-}) => {
+const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
   const [value, setValue] = useState(initialValue);
   const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
 
   const onChange = (e) => setValue(e.target.value);
+
   const onBlur = () => {
     if (value !== initialValue) {
       updateMyData(index, id, value);
     }
     setEditable(false);
   };
+
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
       onBlur();
     }
   };
+
   const onClick = () => setEditable(true);
 
   return editable ? (
@@ -47,12 +46,13 @@ const EditableCell = ({
     />
   ) : (
     <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
-      {value || "Clique para editar"}
+      {value || t('click_to_edit')}
     </div>
   );
 };
 
 const WorkOrdersPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterInput, setFilterInput] = useState('');
@@ -111,25 +111,25 @@ const WorkOrdersPage = () => {
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Descrição', accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Tipo de Manutenção', accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Status', accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Data de Criação', accessor: 'data_criacao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Data de Agendamento', accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Data de Conclusão', accessor: 'data_conclusao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Prioridade', accessor: 'prioridade', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Responsável', accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Custo Estimado', accessor: 'custo_estimado', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Custo Real', accessor: 'custo_real', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Notas', accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Ações', id: 'actions', Cell: ({ row }) => (
+    { Header: t('description'), accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('status'), accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('creation_date'), accessor: 'data_criacao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('schedule_date'), accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('completion_date'), accessor: 'data_conclusao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('priority'), accessor: 'prioridade', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('estimated_cost'), accessor: 'custo_estimado', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('real_cost'), accessor: 'custo_real', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('notes'), accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('actions'), id: 'actions', Cell: ({ row }) => (
         <button onClick={() => handleDeleteWorkOrder(row.original.id)}
           className="text-red-500 hover:text-red-700">
           <Trash2 size={20} />
         </button>
       )
     }
-  ], [updateMyData, handleDeleteWorkOrder, theme]);
+  ], [updateMyData, handleDeleteWorkOrder, theme, t]);
 
   const {
     getTableProps,
@@ -158,17 +158,17 @@ const WorkOrdersPage = () => {
           <div className="loading loading-dots loading-lg"></div>
         </div>
       ) : (
-        <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Ordens de Serviço</h1>
+        <div className="container mx-auto px-4 py-4 mt-4">
+          <h1 className="text-3xl font-bold mb-4 py-5">{t('work_orders')}</h1>
           <div className="mb-4 flex justify-between items-center">
             <button onClick={handleAddWorkOrder} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
-              <PlusCircle className="mr-2" size={20} /> Adicionar Ordem de Serviço
+              <PlusCircle className="mr-2" size={20} /> {t('add_work_order')}
             </button>
             <div className="relative w-64">
               <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('search')}
                 value={filterInput}
                 onChange={e => {
                   setGlobalFilter(e.target.value);
@@ -217,10 +217,7 @@ const WorkOrdersPage = () => {
                 {'<'}
               </button>
               <span className={`mx-3 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                Página{' '}
-                <strong>
-                  {pageIndex + 1} de {Math.ceil(data.length / pageSize)}
-                </strong>
+                {t('page')} <strong>{pageIndex + 1} {t('of')} {Math.ceil(data.length / pageSize)}</strong>
               </span>
               <button onClick={() => nextPage()} disabled={!canNextPage} className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                 {'>'}
@@ -231,7 +228,7 @@ const WorkOrdersPage = () => {
                 className={`border rounded px-2 ml-3 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                 {[10, 20, 30, 50].map(size => (
                   <option key={size} value={size}>
-                    Mostrar {size}
+                    {t('show')} {size}
                   </option>
                 ))}
               </select>

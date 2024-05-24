@@ -22,11 +22,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/ativos": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/ativos.js"
-    ],
     "/dashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

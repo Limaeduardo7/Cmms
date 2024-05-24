@@ -4,24 +4,20 @@ import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table
 import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react';
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3001/api/planejamento';
 
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData, // Confirme que esta propriedade está sendo recebida corretamente
-  theme
-}) => {
+const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
   const [value, setValue] = useState(initialValue);
   const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
 
   const onChange = (e) => setValue(e.target.value);
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value); // Garantir que esta função é chamada corretamente
+      updateMyData(index, id, value);
     }
     setEditable(false);
   };
@@ -50,90 +46,92 @@ const EditableCell = ({
     />
   ) : (
     <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
-      {value || "Clique para editar"}
+      {value || t('click_to_edit')}
     </div>
   );
 };
 
-const ResponsiblePage = () => {
+const PlanningPage = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [filterInput, setFilterInput] = useState('');
   const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchResponsibles = async () => {
+    const fetchPlanning = async () => {
       try {
         const response = await axios.get(API_URL);
         setData(response.data);
         setTimeout(() => {
-          setIsLoading(false); // Set loading to false after 2 seconds
-        }, 1000); // 2 seconds duration
+          setIsLoading(false);
+        }, 1000);
       } catch (error) {
-        console.error("Erro ao buscar responsáveis", error);
+        console.error("Erro ao buscar planejamentos", error);
         setIsLoading(false);
       }
     };
-    fetchResponsibles();
+    fetchPlanning();
   }, []);
-  
 
   const updateMyData = useCallback((rowIndex, columnId, newValue) => {
-    const responsibleId = data[rowIndex].id;
-    const updatedResponsible = { ...data[rowIndex], [columnId]: newValue };
-    axios.put(`${API_URL}/${responsibleId}`, updatedResponsible)
+    const planningId = data[rowIndex].id;
+    const updatedPlanning = { ...data[rowIndex], [columnId]: newValue };
+    axios.put(`${API_URL}/${planningId}`, updatedPlanning)
       .then(response => {
         const newData = [...data];
         newData[rowIndex] = response.data;
         setData(newData);
       })
-      .catch(error => console.error("Erro ao atualizar responsável", error));
-  }, [data]); // Certifique-se de incluir [data] nas dependências
+      .catch(error => console.error("Erro ao atualizar planejamento", error));
+  }, [data]);
 
-  const handleAddResponsible = useCallback(() => {
-    const newResponsible = {
-      nome: '',
-      telefone: '',
-      ativo: true,
-      departamento: '',
-      cargo: '',
-      email: ''
+  const handleAddPlanning = useCallback(() => {
+    const newPlanning = {
+      data_agendamento: '',
+      hora_agendamento: '',
+      tipo_manutencao: '',
+      status: '',
+      responsavel: '',
+      detalhes: '',
+      notas: '',
+      ativo_relacionado_id: ''
     };
-    axios.post(API_URL, newResponsible)
+    axios.post(API_URL, newPlanning)
       .then(response => {
         setData([response.data, ...data]);
       })
-      .catch(error => console.error("Erro ao adicionar responsável", error));
-  }, [data]); // Inclua [data] nas dependências
+      .catch(error => console.error("Erro ao adicionar planejamento", error));
+  }, [data]);
 
-  const handleDeleteResponsible = useCallback((id) => {
+  const handleDeletePlanning = useCallback((id) => {
     axios.delete(`${API_URL}/${id}`)
       .then(() => {
-        setData(currentData => currentData.filter(responsible => responsible.id !== id));
+        setData(currentData => currentData.filter(planning => planning.id !== id));
       })
-      .catch(error => console.error("Erro ao deletar responsável", error));
+      .catch(error => console.error("Erro ao deletar planejamento", error));
   }, []);
 
   const columns = useMemo(() => [
-    { Header: 'Data', accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Hora', accessor: 'hora_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Tipo de Manutenção', accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Status', accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Responsável', accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Detalhes', accessor: 'detalhes', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Notas', accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: 'Ativo Relacionado', accessor: 'ativo_relacionado_id', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('date'), accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('time'), accessor: 'hora_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('status'), accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('details'), accessor: 'detalhes', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('notes'), accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('related_asset'), accessor: 'ativo_relacionado_id', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
-      Header: 'Ações',
+      Header: t('actions'),
       id: 'actions',
       Cell: ({ row }) => (
-        <button onClick={() => handleDeleteResponsible(row.original.id)}
+        <button onClick={() => handleDeletePlanning(row.original.id)}
           className="text-red-500 hover:text-red-700">
           <Trash2 size={20} />
         </button>
       )
     }
-  ], [updateMyData, handleDeleteResponsible, theme]);
+  ], [updateMyData, handleDeletePlanning, theme, t]);
 
   const {
     getTableProps,
@@ -162,17 +160,17 @@ const ResponsiblePage = () => {
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
-        <div className="container mx-auto px-4 py-4 mt-14">
-          <h1 className="text-3xl font-bold mb-4 py-5">Planejamento de Manutenções</h1>
+        <div className="container mx-auto px-4 py-4 mt-4">
+          <h1 className="text-3xl font-bold mb-4 py-5">{t('maintenance_planning')}</h1>
           <div className="mb-4 flex justify-between items-center">
-            <button onClick={handleAddResponsible} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
-              <PlusCircle className="mr-2" size={20} /> Adicionar Responsável
+            <button onClick={handleAddPlanning} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-400'}`}>
+              <PlusCircle className="mr-2" size={20} /> {t('add_planning')}
             </button>
             <div className="relative w-64">
               <Search className={`w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`} />
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('search')}
                 value={filterInput}
                 onChange={e => {
                   setGlobalFilter(e.target.value);
@@ -221,10 +219,7 @@ const ResponsiblePage = () => {
                 {'<'}
               </button>
               <span className={`mx-3 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                Página{' '}
-                <strong>
-                  {pageIndex + 1} de {Math.ceil(data.length / pageSize)}
-                </strong>
+                {t('page')} <strong>{pageIndex + 1} {t('of')} {Math.ceil(data.length / pageSize)}</strong>
               </span>
               <button onClick={() => nextPage()} disabled={!canNextPage} className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                 {'>'}
@@ -235,7 +230,7 @@ const ResponsiblePage = () => {
                 className={`border rounded px-2 ml-3 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
                 {[10, 20, 30, 50].map(size => (
                   <option key={size} value={size}>
-                    Mostrar {size}
+                    {t('show')} {size}
                   </option>
                 ))}
               </select>
@@ -247,4 +242,4 @@ const ResponsiblePage = () => {
   );
 };
 
-export default ResponsiblePage;
+export default PlanningPage;

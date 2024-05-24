@@ -2,8 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/ativos": "pages/ativos.js",
   "/ordens-servico": "pages/ordens-servico.js",
-  "/dashboard": "pages/dashboard.js",
-  "/planejamento": "pages/planejamento.js"
+  "/planejamento": "pages/planejamento.js",
+  "/dashboard": "pages/dashboard.js"
 }
