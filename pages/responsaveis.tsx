@@ -90,7 +90,6 @@ const ResponsiblePage = () => {
     const newResponsible = {
       nome: '',
       telefone: '',
-      ativo: true,
       departamento: '',
       cargo: '',
       email: ''
@@ -113,7 +112,6 @@ const ResponsiblePage = () => {
   const columns = useMemo(() => [
     { Header: t('name'), accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('phone'), accessor: 'telefone', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('active'), accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('department'), accessor: 'departamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('position'), accessor: 'cargo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('email'), accessor: 'email', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },

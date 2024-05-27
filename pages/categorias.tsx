@@ -12,7 +12,7 @@ const EditableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
-  updateMyData, // Esta função é passada aqui
+  updateMyData,
   theme
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -23,7 +23,7 @@ const EditableCell = ({
 
   const onBlur = () => {
     if (value !== initialValue) {
-      updateMyData(index, id, value);  // Chamada à função updateMyData
+      updateMyData(index, id, value);
     }
     setEditable(false);
   };
@@ -69,9 +69,7 @@ const CategoriesPage = () => {
       try {
         const response = await axios.get(API_URL);
         setData(response.data);
-        setTimeout(() => {
-          setIsLoading(false); // Set loading to false after 2 seconds
-        }, 1000); // 2 seconds duration
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching categories", error);
         setIsLoading(false);
@@ -112,7 +110,6 @@ const CategoriesPage = () => {
   const columns = useMemo(() => [
     { Header: t('nome'), accessor: 'nome', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('descricao'), accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('ativo'), accessor: 'ativo', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     {
       Header: t('actions'),
       id: 'actions',

@@ -22,20 +22,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/dashboard": [
+    "/ativos": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/dashboard.js"
+      "static/chunks/pages/ativos.js"
+    ],
+    "/categorias": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/categorias.js"
     ],
     "/ordens-servico": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/ordens-servico.js"
-    ],
-    "/planejamento": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/planejamento.js"
     ]
   },
   "ampFirstPages": []

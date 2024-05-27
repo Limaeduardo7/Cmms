@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Menu, User, Bell, Sun, Moon, Trash2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../contexts/CurrencyContext';
 import styles from './Header.module.css';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation('translation');
+  const { currency, setCurrency } = useCurrency();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
@@ -84,6 +86,10 @@ const Header = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
+  };
+
+  const handleCurrencyChange = (e) => {
+    setCurrency(e.target.value);
   };
 
   return (
@@ -271,6 +277,16 @@ const Header = () => {
                       <option value="gmt+1">GMT+1</option>
                       <option value="gmt+2">GMT+2</option>
                       <option value="gmt+3">GMT+3</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="currency" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{t('currency')}</label>
+                    <select id="currency" name="currency" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" onChange={handleCurrencyChange} defaultValue={currency}>
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="BRL">BRL</option>
+                      <option value="GBP">GBP</option>
+                      <option value="JPY">JPY</option>
                     </select>
                   </div>
                 </div>

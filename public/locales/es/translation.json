@@ -92,5 +92,10 @@
   "descricao": "Descripción",
   "ativo": "Activo",
   "add_work_order": "Agregar Orden de Trabajo",
-  "add_planning": "Agregar Planificación"
+  "add_planning": "Agregar Planificación",
+  "category": "Categoría",
+  "completion_date": "Fecha de Finalización",
+  "real_cost": "Costo Real",
+  "time": "Hora",  
+  "currency": "Divisa"
 }

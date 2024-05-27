@@ -5,8 +5,10 @@ import { Trash2, PlusCircle, Search, ChevronUp, ChevronDown } from 'lucide-react
 import { useTheme } from '../client/contexts/ThemeContext';
 import Header from '../client/components/Header';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../client/contexts/CurrencyContext';
 
 const API_URL = 'http://localhost:3001/api/ordens_servicos';
+const RESPONSAVEIS_URL = 'http://localhost:3001/api/responsaveis';
 
 const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
   const [value, setValue] = useState(initialValue);
@@ -51,25 +53,162 @@ const EditableCell = ({ value: initialValue, row: { index }, column: { id }, upd
   );
 };
 
+const DropdownCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme, options }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <select
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+      autoFocus
+    >
+      {options.map(option => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {value || t('click_to_edit')}
+    </div>
+  );
+};
+
+const DateCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onBlur();
+    }
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <input
+      type="date"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      autoFocus
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+    />
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {value || t('click_to_edit')}
+    </div>
+  );
+};
+
+const CurrencyCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+  const { currency, formatCurrency } = useCurrency();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onBlur();
+    }
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <input
+      type="number"
+      step="0.01"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      autoFocus
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+    />
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {formatCurrency(value, currency) || t('click_to_edit')}
+    </div>
+  );
+};
+
 const WorkOrdersPage = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const { currency, formatCurrency } = useCurrency();
   const [data, setData] = useState([]);
+  const [responsaveis, setResponsaveis] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterInput, setFilterInput] = useState('');
-  const { theme } = useTheme();
 
   useEffect(() => {
     setIsLoading(true);
     axios.get(API_URL)
       .then(response => {
-        setTimeout(() => {
-          setData(response.data);
-          setIsLoading(false);
-        }, 2000);
+        setData(response.data);
+        setIsLoading(false);
       })
       .catch(error => {
         console.error("Erro ao buscar ordens de serviço", error);
         setIsLoading(false);
+      });
+
+    axios.get(RESPONSAVEIS_URL)
+      .then(response => {
+        setResponsaveis(response.data.map(responsavel => responsavel.nome));
+      })
+      .catch(error => {
+        console.error("Erro ao buscar responsáveis", error);
       });
   }, []);
 
@@ -112,15 +251,15 @@ const WorkOrdersPage = () => {
 
   const columns = useMemo(() => [
     { Header: t('description'), accessor: 'descricao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('status'), accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('creation_date'), accessor: 'data_criacao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('schedule_date'), accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('completion_date'), accessor: 'data_conclusao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('priority'), accessor: 'prioridade', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('estimated_cost'), accessor: 'custo_estimado', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('real_cost'), accessor: 'custo_real', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={['Preditiva', 'Preventiva', 'Corretiva']} /> },
+    { Header: t('status'), accessor: 'status', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={['Pendente', 'Em andamento', 'Concluída']} /> },
+    { Header: t('creation_date'), accessor: 'data_criacao', Cell: props => <DateCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('schedule_date'), accessor: 'data_agendamento', Cell: props => <DateCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('completion_date'), accessor: 'data_conclusao', Cell: props => <DateCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('priority'), accessor: 'prioridade', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={['Alta', 'Normal', 'Baixa']} /> },
+    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={responsaveis} /> },
+    { Header: t('estimated_cost'), accessor: 'custo_estimado', Cell: props => <CurrencyCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('real_cost'), accessor: 'custo_real', Cell: props => <CurrencyCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('notes'), accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('actions'), id: 'actions', Cell: ({ row }) => (
         <button onClick={() => handleDeleteWorkOrder(row.original.id)}
@@ -129,7 +268,7 @@ const WorkOrdersPage = () => {
         </button>
       )
     }
-  ], [updateMyData, handleDeleteWorkOrder, theme, t]);
+  ], [updateMyData, handleDeleteWorkOrder, theme, t, responsaveis]);
 
   const {
     getTableProps,

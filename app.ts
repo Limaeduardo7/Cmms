@@ -1,3 +1,4 @@
+// app.ts
 import express from 'express';
 import cors from 'cors';
 import assetRoutes from './api/routes/assetRoutes';  // Confira novamente se o caminho está correto

@@ -92,5 +92,11 @@
   "descricao": "Description",
   "ativo": "Active",
   "add_work_order": "Add Work Order",
-  "add_planning": "Add Planning"
+  "add_planning": "Add Planning",
+  "category": "Category",
+  "completion_date": "Completion Date",
+  "real_cost": "Real Cost",
+  "time": "Time",
+  "currency": "Currency"  
+
 }

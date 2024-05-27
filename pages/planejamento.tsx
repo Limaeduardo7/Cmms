@@ -7,6 +7,8 @@ import Header from '../client/components/Header';
 import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3001/api/planejamento';
+const RESPONSAVEIS_URL = 'http://localhost:3001/api/responsaveis';
+const ATIVOS_URL = 'http://localhost:3001/api/assets';
 
 const EditableCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
   const [value, setValue] = useState(initialValue);
@@ -51,11 +53,140 @@ const EditableCell = ({ value: initialValue, row: { index }, column: { id }, upd
   );
 };
 
+const DateCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onBlur();
+    }
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <input
+      type="date"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      autoFocus
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+    />
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {value || t('click_to_edit')}
+    </div>
+  );
+};
+
+const TimeCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onBlur();
+    }
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <input
+      type="time"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      autoFocus
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+    />
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {value || t('click_to_edit')}
+    </div>
+  );
+};
+
+const DropdownCell = ({ value: initialValue, row: { index }, column: { id }, updateMyData, theme, options }) => {
+  const [value, setValue] = useState(initialValue);
+  const [editable, setEditable] = useState(false);
+  const { t } = useTranslation();
+
+  const onChange = (e) => setValue(e.target.value);
+
+  const onBlur = () => {
+    if (value !== initialValue) {
+      updateMyData(index, id, value);
+    }
+    setEditable(false);
+  };
+
+  const onClick = () => setEditable(true);
+
+  return editable ? (
+    <select
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      className="w-full p-1 text-left"
+      style={{
+        backgroundColor: theme === 'dark' ? '#2A2A2A' : 'white',
+        color: theme === 'dark' ? 'white' : 'black'
+      }}
+      autoFocus
+    >
+      {options.map(option => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  ) : (
+    <div onClick={onClick} className="w-full p-1 text-left cursor-pointer">
+      {value || t('click_to_edit')}
+    </div>
+  );
+};
+
 const PlanningPage = () => {
   const { t } = useTranslation();
-  const [data, setData] = useState([]);
-  const [filterInput, setFilterInput] = useState('');
   const { theme } = useTheme();
+  const [data, setData] = useState([]);
+  const [responsaveis, setResponsaveis] = useState([]);
+  const [ativos, setAtivos] = useState([]);
+  const [filterInput, setFilterInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -63,15 +194,34 @@ const PlanningPage = () => {
       try {
         const response = await axios.get(API_URL);
         setData(response.data);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setIsLoading(false);
       } catch (error) {
         console.error("Erro ao buscar planejamentos", error);
         setIsLoading(false);
       }
     };
+
+    const fetchResponsaveis = async () => {
+      try {
+        const response = await axios.get(RESPONSAVEIS_URL);
+        setResponsaveis(response.data.map(responsavel => responsavel.nome));
+      } catch (error) {
+        console.error("Erro ao buscar responsáveis", error);
+      }
+    };
+
+    const fetchAtivos = async () => {
+      try {
+        const response = await axios.get(ATIVOS_URL);
+        setAtivos(response.data.map(ativo => ativo.nome));
+      } catch (error) {
+        console.error("Erro ao buscar ativos", error);
+      }
+    };
+
     fetchPlanning();
+    fetchResponsaveis();
+    fetchAtivos();
   }, []);
 
   const updateMyData = useCallback((rowIndex, columnId, newValue) => {
@@ -113,14 +263,14 @@ const PlanningPage = () => {
   }, []);
 
   const columns = useMemo(() => [
-    { Header: t('date'), accessor: 'data_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('time'), accessor: 'hora_agendamento', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('status'), accessor: 'status', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('date'), accessor: 'data_agendamento', Cell: props => <DateCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('time'), accessor: 'hora_agendamento', Cell: props => <TimeCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('maintenance_type'), accessor: 'tipo_manutencao', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={['Preditiva', 'Corretiva', 'Preventiva']} /> },
+    { Header: t('status'), accessor: 'status', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={['Em andamento', 'Pendente', 'Concluído']} /> },
+    { Header: t('responsible'), accessor: 'responsavel', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={responsaveis} /> },
     { Header: t('details'), accessor: 'detalhes', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
     { Header: t('notes'), accessor: 'notas', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
-    { Header: t('related_asset'), accessor: 'ativo_relacionado_id', Cell: props => <EditableCell {...props} updateMyData={updateMyData} theme={theme} /> },
+    { Header: t('related_asset'), accessor: 'ativo_relacionado_id', Cell: props => <DropdownCell {...props} updateMyData={updateMyData} theme={theme} options={ativos} /> },
     {
       Header: t('actions'),
       id: 'actions',
@@ -131,7 +281,7 @@ const PlanningPage = () => {
         </button>
       )
     }
-  ], [updateMyData, handleDeletePlanning, theme, t]);
+  ], [updateMyData, handleDeletePlanning, theme, t, responsaveis, ativos]);
 
   const {
     getTableProps,
