@@ -7,7 +7,7 @@ import { useCurrency } from '../client/contexts/CurrencyContext';
 import Header from '../client/components/Header';
 import { useTranslation } from 'react-i18next';
 
-const API_URL = 'http://localhost:3001/api/assets';
+const API_URL = 'http://localhost:3001/api/assets1';
 const CATEGORIAS_URL = 'http://localhost:3001/api/categorias';
 const RESPONSAVEIS_URL = 'http://localhost:3001/api/responsaveis';
 
@@ -310,6 +310,9 @@ const AssetsPage = () => {
   const updateMyData = useCallback((rowIndex, columnId, newValue) => {
     const assetId = data[rowIndex].id;
     const updatedAsset = { ...data[rowIndex], [columnId]: newValue };
+
+    console.log('Dados para atualizar:', updatedAsset); // Adicionando log para depuração
+
     axios.put(`${API_URL}/${assetId}`, updatedAsset)
       .then(response => {
         const newData = [...data];
@@ -317,28 +320,33 @@ const AssetsPage = () => {
         setData(newData);
       })
       .catch(error => console.error("Erro ao atualizar ativo", error));
-  }, [data]);
+}, [data]);
 
-  const handleAddAsset = useCallback(() => {
-    const newAsset = {
-      nome: '',
-      descricao: '',
-      categoria: '',
-      status: '',
-      localizacao: '',
-      responsavel: '',
-      data_aquisicao: '',
-      proxima_manutencao: '',
-      custo_aquisicao: '',
-      valor_atual: '',
-      numero_serie: ''
-    };
-    axios.post(API_URL, newAsset)
-      .then(response => {
-        setData([response.data, ...data]);
-      })
-      .catch(error => console.error("Erro ao adicionar ativo", error));
-  }, [data]);
+
+const handleAddAsset = useCallback(() => {
+  const newAsset = {
+    nome: '',
+    descricao: '',
+    categoria: '',
+    status: '',
+    localizacao: '',
+    responsavel: '',
+    data_aquisicao: '',
+    proxima_manutencao: '',
+    custo_aquisicao: '',
+    valor_atual: '',
+    numero_serie: ''
+  };
+
+  console.log('Dados para adicionar:', newAsset); // Adicionando log para depuração
+
+  axios.post(API_URL, newAsset)
+    .then(response => {
+      setData([response.data, ...data]);
+    })
+    .catch(error => console.error("Erro ao adicionar ativo", error));
+}, [data]);
+
 
   const handleDeleteAsset = useCallback((id) => {
     axios.delete(`${API_URL}/${id}`)

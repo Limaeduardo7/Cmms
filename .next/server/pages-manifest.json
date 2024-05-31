@@ -2,8 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/planejamento": "pages/planejamento.js",
   "/ordens-servico": "pages/ordens-servico.js",
-  "/categorias": "pages/categorias.js",
   "/ativos": "pages/ativos.js"
 }

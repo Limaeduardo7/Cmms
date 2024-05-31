@@ -1,50 +1,41 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    BaseEntity
-} from 'typeorm';
+// src/models/Asset.ts
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-// Verifique se você está usando `@Entity` corretamente:
-// `@Entity()` é chamado como uma função se você não estiver passando nenhum argumento
 @Entity()
-export class Asset extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Asset {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ type: 'varchar', length: 200 })
-    nome: string;
+  @Column()
+  nome: string;
 
-    @Column({ type: 'varchar', length: 100 })
-    categoria: string;
+  @Column()
+  descricao: string;
 
-    @Column({ type: 'numeric', precision: 10, scale: 2 })
-    custo_aquisicao: number;
+  @Column()
+  categoria: string;
 
-    @Column({ type: 'date' })
-    data_aquisicao: Date;
+  @Column()
+  status: string;
 
-    @Column({ type: 'varchar', length: 200 })
-    fornecedor: string;
+  @Column()
+  localizacao: string;
 
-    @Column({ type: 'text' })
-    informacoes_garantia: string;
+  @Column()
+  responsavel: string;
 
-    @Column({ type: 'text' })
-    notas: string;
+  @Column({ type: 'date' })
+  data_aquisicao: string;
 
-    @Column({ type: 'varchar', length: 200 })
-    numero_serie: string;
+  @Column({ type: 'date' })
+  proxima_manutencao: string;
 
-    @Column({ type: 'date' })
-    proxima_manutencao: Date;
+  @Column({ type: 'decimal' })
+  custo_aquisicao: number;
 
-    @Column({ type: 'varchar', length: 100 })
-    responsavel: string;
+  @Column({ type: 'decimal' })
+  valor_atual: number;
 
-    @Column({ type: 'varchar', length: 50 })
-    status: string;
-
-    @Column({ type: 'numeric', precision: 10, scale: 2 })
-    valor_atual: number;
+  @Column()
+  numero_serie: string;
 }

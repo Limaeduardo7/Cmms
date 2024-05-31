@@ -27,11 +27,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/ativos.js"
     ],
-    "/categorias": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/categorias.js"
-    ],
     "/ordens-servico": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
